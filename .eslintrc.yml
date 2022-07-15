@@ -1,1 +1,3 @@
 extends: cheminfo-typescript
+rules:
+  'jest/no-standalone-expect': off

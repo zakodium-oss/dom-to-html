@@ -1,13 +1,23 @@
-import { JSDOM } from 'jsdom';
+import { test, expect } from '@playwright/experimental-ct-react';
 
 import domToHtml from '..';
 
-describe('Plot', () => {
-  it('default', async () => {
-    const { document } = new JSDOM(`<div id="test"><span>test<span></div>`)
-      .window;
-
-    const html = await domToHtml(document.getElementById('test'));
-    expect(html).toBe(`<span>test<span>`);
+test.describe('test domToHtml', () => {
+  test('default', async ({ mount }) => {
+    const component = await mount(
+      <div>
+        <span>test</span>
+      </div>,
+    );
+    const dom = await component.evaluate((dom) => dom);
+    const result = await domToHtml(dom);
+    expect(result).toBeUndefined();
+  });
+  test('basic test', async ({ page }) => {
+    await page.goto('https://playwright.dev/');
+    const title = page.locator('.navbar__inner .navbar__title');
+    const dom = await title.evaluate((dom) => dom);
+    const result = await domToHtml(dom);
+    expect(result).toBeUndefined();
   });
 });
