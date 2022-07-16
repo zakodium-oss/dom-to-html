@@ -1,21 +1,18 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 
-import domToHtml from '..';
+import { TestComponent } from './utils';
 
 test.describe('test domToHtml', () => {
-  test('basic test', async ({ page }) => {
-    await page.goto('https://playwright.dev/');
-    const title = page.locator('.navbar__inner .navbar__title');
-    await expect(title).toHaveText('Playwright');
-  });
-  test.skip('default', async ({ mount }) => {
+  test('default', async ({ mount }) => {
     const component = await mount(
-      <div>
-        <span>test</span>
-      </div>,
+      <TestComponent>
+        <div>
+          <span>test</span>
+        </div>
+      </TestComponent>,
     );
-    const dom = await component.evaluate((dom) => dom);
-    const result = await domToHtml(dom);
+    const html = component.locator('#html');
+    const result = await html.textContent();
     expect(result).toBe('<div><span>test</span></div>');
   });
 });

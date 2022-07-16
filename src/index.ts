@@ -3,11 +3,9 @@
  * @params dom - Dom element.
  * @returns - Html result.
  */
-export default async function domToHtml(
-  dom: Element | null,
-): Promise<string | undefined> {
+export default async function domToHtml(dom: Element | null): Promise<string> {
   if (dom === null || !dom.innerHTML) {
-    return undefined;
+    return '';
   }
   const canvases = dom.querySelectorAll('canvas');
   // clone the original dom, we also need to copy the canvas
