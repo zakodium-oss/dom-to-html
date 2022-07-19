@@ -11,7 +11,6 @@ const config: PlaywrightTestConfig = {
       strictSelectors: true,
     },
   },
-  // testDir: './src/__tests__/',
   projects: [
     {
       name: 'chromium',
