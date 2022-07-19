@@ -43,21 +43,21 @@ export default async function domToHtml(dom: Element | null): Promise<string> {
     });
     const url = URL.createObjectURL(svg);
 
-    // eslint-disable-next-line @typescript-eslint/no-loop-func
-    const promise = new Promise<void>((resolve) => {
-      image.onload = () => {
-        if (ctx) {
-          ctx.drawImage(image, 0, 0);
-        }
-        const png = canvas.toDataURL('image/png');
-        const img = document.createElement('img');
-        img.src = png;
-        svgDOMCopy.replaceWith(img);
-        URL.revokeObjectURL(url);
-        resolve();
-      };
-    });
-    promises.push(promise);
+    const promise = (document: Document) =>
+      new Promise<void>((resolve) => {
+        image.onload = () => {
+          if (ctx) {
+            ctx.drawImage(image, 0, 0);
+          }
+          const png = canvas.toDataURL('image/png');
+          const img = document.createElement('img');
+          img.src = png;
+          svgDOMCopy.replaceWith(img);
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+      });
+    promises.push(promise(document));
     image.src = url;
   }
 

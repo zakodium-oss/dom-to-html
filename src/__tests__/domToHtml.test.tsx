@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/experimental-ct-react';
 import { TestComponent } from './utils';
 
 test.describe('test domToHtml', () => {
-  test('default', async ({ mount }) => {
+  test('simple test', async ({ mount }) => {
     const component = await mount(
       <TestComponent>
         <div>
