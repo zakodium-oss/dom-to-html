@@ -29,7 +29,7 @@ export default async function domToHtml(dom: Element | null): Promise<string> {
     const width = svgDOM.clientWidth;
     const height = svgDOM.clientHeight;
     const svgString = svgDOM.outerHTML;
-    const canvas = document.createElement('canvas');
+    const canvas = globalThis.document.createElement('canvas');
     canvas.setAttribute('width', width.toString());
     canvas.setAttribute('height', height.toString());
     const ctx = canvas.getContext('2d');
@@ -43,21 +43,21 @@ export default async function domToHtml(dom: Element | null): Promise<string> {
     });
     const url = URL.createObjectURL(svg);
 
-    const promise = (document: Document) =>
+    promises.push(
       new Promise<void>((resolve) => {
         image.onload = () => {
           if (ctx) {
             ctx.drawImage(image, 0, 0);
           }
           const png = canvas.toDataURL('image/png');
-          const img = document.createElement('img');
+          const img = globalThis.document.createElement('img');
           img.src = png;
           svgDOMCopy.replaceWith(img);
           URL.revokeObjectURL(url);
           resolve();
         };
-      });
-    promises.push(promise(document));
+      }),
+    );
     image.src = url;
   }
 
