@@ -12,3 +12,4 @@ jobs:
     with:
       node-version-matrix: '[14, 16, 18]'
       lint-check-types: true
+      disable-tests: true
