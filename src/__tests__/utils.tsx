@@ -14,10 +14,14 @@ export function TestComponent({ children }: TestComponentProps) {
   }, []);
   return (
     <div>
-      <div ref={ref} id="test">
-        {children}
+      <div>
+        <span ref={ref} id="test">
+          {children}
+        </span>
+        {html && (
+          <span dangerouslySetInnerHTML={{ __html: html }} id="result"></span>
+        )}
       </div>
-      {html && <div dangerouslySetInnerHTML={{ __html: html }} id="result" />}
       {html && <textarea rows={20} value={html} id="html" />}
     </div>
   );

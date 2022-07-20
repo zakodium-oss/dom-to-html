@@ -12,14 +12,10 @@ test.describe('test domToHtml', () => {
       </TestComponent>,
     );
 
-    // const test = component.locator('#test');
-    // await test.screenshot({
-    //   path: './src/__tests__/__snapshots__/basic.png',
-    // });
-
-    const result = component.locator('#result');
-    await expect(result).toHaveScreenshot(
-      './src/__tests__/__snapshots__/basic.png',
+    const test = component.locator('#test >> div');
+    const result = component.locator('#result >> div');
+    expect((await test.screenshot()).compare(await result.screenshot())).toBe(
+      0,
     );
 
     const html = component.locator('#html');
@@ -35,14 +31,10 @@ test.describe('test domToHtml', () => {
       </TestComponent>,
     );
 
-    // const test = component.locator('#test');
-    // await test.screenshot({
-    //   path: './src/__tests__/__snapshots__/svg.png',
-    // });
-
+    const test = component.locator('#test');
     const result = component.locator('#result');
-    await expect(result).toHaveScreenshot(
-      './src/__tests__/__snapshots__/svg.png',
+    expect((await test.screenshot()).compare(await result.screenshot())).toBe(
+      0,
     );
 
     const html = component.locator('#html');
@@ -56,15 +48,10 @@ test.describe('test domToHtml', () => {
       </TestComponent>,
     );
 
-    // const test = component.locator('#test');
-    // await test.screenshot({
-    //   path: './src/__tests__/__snapshots__/canvas.png',
-    // });
-
+    const test = component.locator('#test');
     const result = component.locator('#result');
-
-    await expect(result).toHaveScreenshot(
-      './src/__tests__/__snapshots__/canvas.png',
+    expect((await test.screenshot()).compare(await result.screenshot())).toBe(
+      0,
     );
 
     const html = component.locator('#html');
