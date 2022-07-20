@@ -21,7 +21,7 @@ export function TestComponent({ children }: TestComponentProps) {
       <div ref={ref} id="test">
         {children}
       </div>
-      <div id="html">{html}</div>
+      {html && <textarea rows={20} value={html} id="html"></textarea>}
     </div>
   );
 }

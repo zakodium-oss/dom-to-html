@@ -12,7 +12,7 @@ test.describe('test domToHtml', () => {
       </TestComponent>,
     );
     const html = component.locator('#html');
-    const result = await html.textContent();
+    const result = await html.inputValue();
     expect(result).toBe('<div><span>test</span></div>');
   });
 });
