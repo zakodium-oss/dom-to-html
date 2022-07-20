@@ -29,7 +29,7 @@ export default async function domToHtml(dom: Element | null): Promise<string> {
     const width = svgDOM.clientWidth;
     const height = svgDOM.clientHeight;
     const svgString = svgDOM.outerHTML;
-    const canvas = globalThis.document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     canvas.setAttribute('width', width.toString());
     canvas.setAttribute('height', height.toString());
     const ctx = canvas.getContext('2d');
@@ -50,7 +50,7 @@ export default async function domToHtml(dom: Element | null): Promise<string> {
             ctx.drawImage(image, 0, 0);
           }
           const png = canvas.toDataURL('image/png');
-          const img = globalThis.document.createElement('img');
+          const img = document.createElement('img');
           img.src = png;
           svgDOMCopy.replaceWith(img);
           URL.revokeObjectURL(url);
