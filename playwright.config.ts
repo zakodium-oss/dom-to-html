@@ -11,6 +11,7 @@ const config: PlaywrightTestConfig = {
       strictSelectors: true,
     },
   },
+  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.3, maxDiffPixels: 10 } },
   testDir: './src/__tests__',
   projects: [
     {

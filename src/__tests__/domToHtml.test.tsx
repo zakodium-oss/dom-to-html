@@ -11,17 +11,22 @@ test.describe('test domToHtml', () => {
         </div>
       </TestComponent>,
     );
-    const test = component.locator('#test');
+
+    // const test = component.locator('#test');
+    // await test.screenshot({
+    //   path: './src/__tests__/__snapshots__/basic.png',
+    // });
+
     const result = component.locator('#result');
-    expect((await test.screenshot()).buffer).toStrictEqual(
-      (await result.screenshot()).buffer,
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/__snapshots__/basic.png',
     );
 
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe('<div><span>text</span></div>');
   });
-  test.skip('svg', async ({ mount }) => {
+  test('svg', async ({ mount }) => {
     const component = await mount(
       <TestComponent>
         <svg>
@@ -30,20 +35,37 @@ test.describe('test domToHtml', () => {
       </TestComponent>,
     );
 
+    // const test = component.locator('#test');
+    // await test.screenshot({
+    //   path: './src/__tests__/__snapshots__/svg.png',
+    // });
+
     const result = component.locator('#result');
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/__snapshots__/svg.png',
+    );
+
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
   });
   test('canvas', async ({ mount }) => {
-    const component = await mount(<CanvasTest />);
+    const component = await mount(
+      <TestComponent>
+        <CanvasTest />
+      </TestComponent>,
+    );
 
     // const test = component.locator('#test');
+    // await test.screenshot({
+    //   path: './src/__tests__/__snapshots__/canvas.png',
+    // });
+
     const result = component.locator('#result');
 
-    // expect((await test.screenshot()).buffer).toStrictEqual(
-    //   (await result.screenshot()).buffer,
-    // );
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/__snapshots__/canvas.png',
+    );
 
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import domToHtml from '..';
 
@@ -9,22 +9,16 @@ interface TestComponentProps {
 export function TestComponent({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState('');
-  async function initializeHtml() {
-    const html = await domToHtml(ref.current);
-    setHtml(html);
-  }
   useEffect(() => {
-    void initializeHtml();
+    if (ref.current) setHtml(domToHtml(ref.current));
   }, []);
   return (
     <div>
       <div ref={ref} id="test">
         {children}
       </div>
-      {html && (
-        <div dangerouslySetInnerHTML={{ __html: html }} id="result"></div>
-      )}
-      {html && <textarea rows={20} value={html} id="html"></textarea>}
+      {html && <div dangerouslySetInnerHTML={{ __html: html }} id="result" />}
+      {html && <textarea rows={20} value={html} id="html" />}
     </div>
   );
 }
@@ -43,14 +37,5 @@ export function CanvasTest() {
   useEffect(() => {
     initializeCanvas();
   }, []);
-  return (
-    <TestComponent>
-      <canvas
-        ref={ref}
-        width="200"
-        height="100"
-        style={{ border: '1px solid #000000' }}
-      />
-    </TestComponent>
-  );
+  return <canvas ref={ref} width="200" height="100" />;
 }
