@@ -61,6 +61,6 @@ export async function domToHtml(dom: Element | null): Promise<string> {
     image.src = url;
   }
 
-  await Promise.all(promises);
+  void Promise.all(promises);
   return domCopy.innerHTML;
 }
