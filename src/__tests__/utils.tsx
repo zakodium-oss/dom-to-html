@@ -1,6 +1,9 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
-import domToHtml from '..';
+import { domToHtml } from '..';
+
+import jpg from './test.jpg';
+import svg from './test.svg';
 
 interface TestComponentProps {
   children?: ReactNode;
@@ -9,8 +12,12 @@ interface TestComponentProps {
 export function TestComponent({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState('');
+  async function initializeHtml() {
+    const html = await domToHtml(ref.current);
+    setHtml(html);
+  }
   useEffect(() => {
-    if (ref.current) setHtml(domToHtml(ref.current));
+    void initializeHtml();
   }, []);
   return (
     <div>
@@ -42,4 +49,19 @@ export function CanvasTest() {
     initializeCanvas();
   }, []);
   return <canvas ref={ref} width="200" height="100" />;
+}
+
+export function SvgTest() {
+  return <img src={svg} />;
+}
+export function FullTest() {
+  return (
+    <>
+      <h1>Test copy DOM element as HTML</h1>
+      <h2>this is a jpg image</h2>
+      <img src={jpg} />
+      <h2>this is a svg image</h2>
+      <img src={svg} />
+    </>
+  );
 }

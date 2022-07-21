@@ -1,11 +1,7 @@
 <html>
   <head> </head>
   <body>
-    <button
-      onclick="copyHTMLToClipboard(domToHtml(document.getElementById('toCopy')))"
-    >
-      Copy</button
-    >"
+    <button onclick="copyHtml()">Copy</button>
     <div id="toCopy">
       <h1>Test copy DOM element as HTML</h1>
       <h2>this is a jpg image</h2>
@@ -15,6 +11,9 @@
     </div>
 
     <script type="text/javascript">
+      async function copyHtml() {
+        copyHTMLToClipboard(await domToHtml(document.getElementById('toCopy')));
+      }
       async function copyHTMLToClipboard(html) {
         const type = 'text/html';
         if (typeof ClipboardItem === 'undefined') {
@@ -34,8 +33,8 @@
         );
       }
 
-      function domToHtml(dom) {
-        if (!dom.innerHTML) {
+      async function domToHtml(dom) {
+        if (dom === null || !dom.innerHTML) {
           return '';
         }
         const canvases = dom.querySelectorAll('canvas');
@@ -46,8 +45,12 @@
           const png = canvases[i].toDataURL('image/png');
           canvasesCopy[i].parentElement.innerHTML = `<img src="${png}" />`;
         }
+
         let svgs = dom.querySelectorAll('svg');
         let svgsCopy = domCopy.querySelectorAll('svg');
+
+        const promises = [];
+
         for (let i = 0; i < svgs.length; i++) {
           const svgDOM = svgs[i];
           const svgDOMCopy = svgsCopy[i];
@@ -67,18 +70,26 @@
             type: 'image/svg+xml;charset=utf-8',
           });
           const url = URL.createObjectURL(svg);
-          image.onload = () => {
-            if (ctx) {
-              ctx.drawImage(image, 0, 0);
-            }
-            const png = canvas.toDataURL('image/png');
-            const img = document.createElement('img');
-            img.src = png;
-            svgDOMCopy.replaceWith(img);
-            URL.revokeObjectURL(url);
-          };
+
+          promises.push(
+            new Promise((resolve) => {
+              image.onload = () => {
+                if (ctx) {
+                  ctx.drawImage(image, 0, 0);
+                }
+                const png = canvas.toDataURL('image/png');
+                const img = document.createElement('img');
+                img.src = png;
+                svgDOMCopy.replaceWith(img);
+                URL.revokeObjectURL(url);
+                resolve();
+              };
+            }),
+          );
           image.src = url;
         }
+
+        await Promise.all(promises);
         return domCopy.innerHTML;
       }
     </script>

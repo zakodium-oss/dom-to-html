@@ -18,7 +18,7 @@
     "clean": "rimraf lib lib-esm",
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
-    "playwright": "playwright test -c playwright.config.ts",
+    "playwright": "playwright test -c playwright.config.ts --update-snapshots",
     "prepack": "npm run tsc",
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",

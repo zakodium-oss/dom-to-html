@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 
-import { FullTest } from './FullTest';
-import { TestComponent, CanvasTest } from './utils';
+import { TestComponent, CanvasTest, FullTest, SvgTest } from './utils';
 
 test.describe('test domToHtml', () => {
   test('basic', async ({ mount }) => {
@@ -12,11 +11,11 @@ test.describe('test domToHtml', () => {
         </div>
       </TestComponent>,
     );
-
-    const test = component.locator('#test >> div');
-    const result = component.locator('#result >> div');
-    expect((await test.screenshot()).compare(await result.screenshot())).toBe(
-      0,
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/basic.png' });
+    const result = component.locator('#result');
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/snapshots/basic.png',
     );
 
     const html = component.locator('#html');
@@ -26,17 +25,14 @@ test.describe('test domToHtml', () => {
   test('svg', async ({ mount }) => {
     const component = await mount(
       <TestComponent>
-        <svg>
-          <circle cx="50" cy="50" r="40" />
-        </svg>
+        <SvgTest />
       </TestComponent>,
     );
 
     const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/svg.png' });
     const result = component.locator('#result');
-    expect((await test.screenshot()).compare(await result.screenshot())).toBe(
-      0,
-    );
+    await expect(result).toHaveScreenshot('./src/__tests__/snapshots/svg.png');
 
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
@@ -50,9 +46,10 @@ test.describe('test domToHtml', () => {
     );
 
     const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/canvas.png' });
     const result = component.locator('#result');
-    expect((await test.screenshot()).compare(await result.screenshot())).toBe(
-      0,
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/snapshots/canvas.png',
     );
 
     const html = component.locator('#html');
@@ -65,9 +62,15 @@ test.describe('test domToHtml', () => {
         <FullTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/full.png' });
+    const result = component.locator('#result');
+    await expect(result).toHaveScreenshot('./src/__tests__/snapshots/full.png');
 
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
-    expect(resultHtml).toMatchSnapshot();
+    expect(resultHtml).toBe(
+      '<h1>Test copy DOM element as HTML</h1><h2>this is a jpg image</h2><img src="/assets/test.6d67798a.jpg"><h2>this is a svg image</h2><img src="/assets/test.1fc60aaf.svg">',
+    );
   });
 });

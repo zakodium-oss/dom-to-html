@@ -3,8 +3,8 @@
  * @params dom - Dom element.
  * @returns - Html result.
  */
-export default function domToHtml(dom: Element): string {
-  if (!dom.innerHTML) {
+export async function domToHtml(dom: Element | null): Promise<string> {
+  if (dom === null || !dom.innerHTML) {
     return '';
   }
   const canvases = dom.querySelectorAll('canvas');
@@ -20,6 +20,8 @@ export default function domToHtml(dom: Element): string {
 
   let svgs = dom.querySelectorAll('svg');
   let svgsCopy = domCopy.querySelectorAll('svg');
+
+  const promises = [];
 
   for (let i = 0; i < svgs.length; i++) {
     const svgDOM = svgs[i];
@@ -41,18 +43,24 @@ export default function domToHtml(dom: Element): string {
     });
     const url = URL.createObjectURL(svg);
 
-    image.onload = () => {
-      if (ctx) {
-        ctx.drawImage(image, 0, 0);
-      }
-      const png = canvas.toDataURL('image/png');
-      const img = document.createElement('img');
-      img.src = png;
-      svgDOMCopy.replaceWith(img);
-      URL.revokeObjectURL(url);
-    };
+    promises.push(
+      new Promise<void>((resolve) => {
+        image.onload = () => {
+          if (ctx) {
+            ctx.drawImage(image, 0, 0);
+          }
+          const png = canvas.toDataURL('image/png');
+          const img = document.createElement('img');
+          img.src = png;
+          svgDOMCopy.replaceWith(img);
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+      }),
+    );
     image.src = url;
   }
 
+  await Promise.all(promises);
   return domCopy.innerHTML;
 }
