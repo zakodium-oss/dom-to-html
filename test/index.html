@@ -1,0 +1,86 @@
+<html>
+  <head> </head>
+  <body>
+    <button
+      onclick="copyHTMLToClipboard(domToHtml(document.getElementById('toCopy')))"
+    >
+      Copy</button
+    >"
+    <div id="toCopy">
+      <h1>Test of copy DOM element as HTMKL</h1>
+      <h2>this is a jpg image</h2>
+      <img src="test.jpg" />
+      <h2>this is a svg image</h2>
+      <img src="test.svg" />
+    </div>
+
+    <script type="text/javascript">
+      async function copyHTMLToClipboard(html) {
+        const type = 'text/html';
+        if (typeof ClipboardItem === 'undefined') {
+          alert('Copy to clipboard not supported in this browser');
+          return;
+        }
+        const blob = new Blob([html], { type });
+        const data = [new ClipboardItem({ [type]: blob })];
+
+        navigator.clipboard.write(data).then(
+          () => {
+            alert('Copied to clipboard');
+          },
+          () => {
+            alert('Failed to copy to clipboard');
+          },
+        );
+      }
+
+      function domToHtml(dom) {
+        if (!dom.innerHTML) {
+          return '';
+        }
+        const canvases = dom.querySelectorAll('canvas');
+        // clone the original dom, we also need to copy the canvas
+        const domCopy = dom.cloneNode(true);
+        const canvasesCopy = domCopy.querySelectorAll('canvas');
+        for (let i = 0; i < canvases.length; i++) {
+          const png = canvases[i].toDataURL('image/png');
+          canvasesCopy[i].parentElement.innerHTML = `<img src="${png}" />`;
+        }
+        let svgs = dom.querySelectorAll('svg');
+        let svgsCopy = domCopy.querySelectorAll('svg');
+        for (let i = 0; i < svgs.length; i++) {
+          const svgDOM = svgs[i];
+          const svgDOMCopy = svgsCopy[i];
+          const width = svgDOM.clientWidth;
+          const height = svgDOM.clientHeight;
+          const svgString = svgDOM.outerHTML;
+          const canvas = document.createElement('canvas');
+          canvas.setAttribute('width', width.toString());
+          canvas.setAttribute('height', height.toString());
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+          const image = new Image();
+          const svg = new Blob([svgString], {
+            type: 'image/svg+xml;charset=utf-8',
+          });
+          const url = URL.createObjectURL(svg);
+          image.onload = () => {
+            if (ctx) {
+              ctx.drawImage(image, 0, 0);
+            }
+            const png = canvas.toDataURL('image/png');
+            const img = document.createElement('img');
+            img.src = png;
+            svgDOMCopy.replaceWith(img);
+            URL.revokeObjectURL(url);
+          };
+          image.src = url;
+        }
+        return domCopy.innerHTML;
+      }
+    </script>
+  </body>
+</html>
