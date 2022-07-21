@@ -22,11 +22,11 @@ export function TestComponent({ children }: TestComponentProps) {
   return (
     <div>
       <div>
-        <span ref={ref} id="test">
+        <div ref={ref} id="test">
           {children}
-        </span>
+        </div>
         {html && (
-          <span dangerouslySetInnerHTML={{ __html: html }} id="result"></span>
+          <div dangerouslySetInnerHTML={{ __html: html }} id="result"></div>
         )}
       </div>
       {html && <textarea rows={20} value={html} id="html" />}
