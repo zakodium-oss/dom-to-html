@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 
+import { FullTest } from './FullTest';
 import { TestComponent, CanvasTest } from './utils';
 
 test.describe('test domToHtml', () => {
@@ -57,5 +58,16 @@ test.describe('test domToHtml', () => {
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+  });
+  test('full', async ({ mount }) => {
+    const component = await mount(
+      <TestComponent>
+        <FullTest />
+      </TestComponent>,
+    );
+
+    const html = component.locator('#html');
+    const resultHtml = await html.inputValue();
+    expect(resultHtml).toMatchSnapshot();
   });
 });
