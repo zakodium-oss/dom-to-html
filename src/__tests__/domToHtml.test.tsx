@@ -37,6 +37,7 @@ test.describe('test domToHtml', () => {
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+    expect(resultHtml.startsWith('<img')).toBe(true);
   });
   test('canvas', async ({ mount }) => {
     const component = await mount(
@@ -55,6 +56,7 @@ test.describe('test domToHtml', () => {
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+    expect(resultHtml.startsWith('<img')).toBe(true);
   });
   test('full', async ({ mount }) => {
     const component = await mount(
@@ -69,8 +71,6 @@ test.describe('test domToHtml', () => {
 
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
-    expect(resultHtml).toBe(
-      '<h1>Test copy DOM element as HTML</h1><h2>this is a jpg image</h2><img src="/assets/test.6d67798a.jpg"><h2>this is a svg image</h2><img src="/assets/test.1fc60aaf.svg">',
-    );
+    expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
   });
 });
