@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 
-import { TestComponent, CanvasTest, FullTest, SvgTest } from './utils';
+import {
+  TestComponent,
+  CanvasTest,
+  FullTest,
+  SvgTest,
+  JpgImageTest,
+  SvgImageTest,
+  OnlineImageTest,
+} from './utils';
 
 test.describe('test domToHtml', () => {
   test('basic', async ({ mount }) => {
@@ -11,8 +19,6 @@ test.describe('test domToHtml', () => {
         </div>
       </TestComponent>,
     );
-    const test = component.locator('#test');
-    await test.screenshot({ path: './src/__tests__/snapshots/basic.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/basic.png',
@@ -28,9 +34,6 @@ test.describe('test domToHtml', () => {
         <SvgTest />
       </TestComponent>,
     );
-
-    const test = component.locator('#test');
-    await test.screenshot({ path: './src/__tests__/snapshots/svg.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/svg.png');
 
@@ -45,12 +48,58 @@ test.describe('test domToHtml', () => {
         <CanvasTest />
       </TestComponent>,
     );
-
-    const test = component.locator('#test');
-    await test.screenshot({ path: './src/__tests__/snapshots/canvas.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/canvas.png',
+    );
+
+    const html = component.locator('#html');
+    const resultHtml = await html.inputValue();
+    expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+    expect(resultHtml.startsWith('<img')).toBe(true);
+  });
+  test('jpg image', async ({ mount }) => {
+    const component = await mount(
+      <TestComponent>
+        <JpgImageTest />
+      </TestComponent>,
+    );
+    const result = component.locator('#result');
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/snapshots/JpgImage.png',
+    );
+
+    const html = component.locator('#html');
+    const resultHtml = await html.inputValue();
+    expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+    expect(resultHtml.startsWith('<img')).toBe(true);
+  });
+  test('svg image', async ({ mount }) => {
+    const component = await mount(
+      <TestComponent>
+        <SvgImageTest />
+      </TestComponent>,
+    );
+    const result = component.locator('#result');
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/snapshots/svgImage.png',
+    );
+
+    const html = component.locator('#html');
+    const resultHtml = await html.inputValue();
+    expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+    expect(resultHtml.startsWith('<img')).toBe(true);
+  });
+  test('online image', async ({ mount }) => {
+    const component = await mount(
+      <TestComponent>
+        <OnlineImageTest />
+      </TestComponent>,
+    );
+    const result = component.locator('#result');
+    await expect(result).toHaveScreenshot(
+      './src/__tests__/snapshots/onlineImage.png',
+      { maxDiffPixelRatio: 0, maxDiffPixels: 0 },
     );
 
     const html = component.locator('#html');
@@ -64,8 +113,6 @@ test.describe('test domToHtml', () => {
         <FullTest />
       </TestComponent>,
     );
-    const test = component.locator('#test');
-    await test.screenshot({ path: './src/__tests__/snapshots/full.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/full.png');
 
