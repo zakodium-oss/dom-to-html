@@ -12,8 +12,12 @@ interface TestComponentProps {
 export function TestComponent({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState('');
+  async function initializeHtml() {
+    const html = await domToHtml(ref.current);
+    setHtml(html);
+  }
   useEffect(() => {
-    if (ref.current) setHtml(domToHtml(ref.current));
+    void initializeHtml();
   }, []);
   return (
     <div>
@@ -46,7 +50,17 @@ export function CanvasTest() {
   }, []);
   return <canvas ref={ref} width="200" height="100" />;
 }
-
+export function JpgImageTest() {
+  return <img src={jpg} />;
+}
+export function SvgImageTest() {
+  return <img src={svg} />;
+}
+export function OnlineImageTest() {
+  return (
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Delete_key1.jpg" />
+  );
+}
 export function SvgTest() {
   return (
     <svg height="400" width="450">
@@ -97,13 +111,27 @@ export function SvgTest() {
   );
 }
 export function FullTest() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  function initializeCanvas() {
+    const ctx = ref?.current?.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = 'rgb(200, 0, 0)';
+      ctx.fillRect(10, 10, 50, 50);
+    }
+  }
+  useEffect(() => {
+    initializeCanvas();
+  }, []);
   return (
     <>
+      <canvas ref={ref} width="200" height="100" />
       <h1>Test copy DOM element as HTML</h1>
       <h2>this is a jpg image</h2>
       <img src={jpg} />
       <h2>this is a svg image</h2>
       <img src={svg} />
+      <h2>this is a png online image</h2>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Delete_key1.jpg" />
       <svg height="80" width="300">
         <g fill="none" stroke="black" stroke-width="4">
           <path stroke-dasharray="5,5" d="M5 20 l215 0" />

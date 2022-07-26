@@ -1,15 +1,14 @@
 <html>
   <head> </head>
   <body>
-    <button
-      onclick="copyHTMLToClipboard(domToHtml(document.getElementById('toCopy')))"
-    >
-      Copy
-    </button>
+    <button onclick="toCopy()">Copy</button>
     <div id="toCopy">
       <h1>Test copy DOM element as HTML</h1>
       <h2>this is a jpg image</h2>
       <img src="test.jpg" />
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/7/77/Delete_key1.jpg"
+      />
       <h2>this is a svg image</h2>
       <img src="test.svg" />
       <svg height="80" width="300">
@@ -26,6 +25,10 @@
     </div>
 
     <script type="text/javascript">
+      async function toCopy() {
+        const html = await domToHtml(document.getElementById('toCopy'));
+        copyHTMLToClipboard(html);
+      }
       function copyHTMLToClipboard(html) {
         const type = 'text/html';
         if (typeof ClipboardItem === 'undefined') {
@@ -37,7 +40,6 @@
 
         navigator.clipboard.write(data).then(
           () => {
-            console.log(html);
             alert('Copied to clipboard');
           },
           () => {
@@ -46,31 +48,55 @@
         );
       }
 
-      function domToHtml(dom) {
+      async function domToHtml(dom) {
         if (dom === null || !dom.innerHTML) {
           return '';
         }
-        const canvases = dom.querySelectorAll('canvas');
-        // clone the original dom, we also need to copy the canvas
         const domCopy = dom.cloneNode(true);
+
+        const canvases = dom.querySelectorAll('canvas');
         const canvasesCopy = domCopy.querySelectorAll('canvas');
         for (let i = 0; i < canvases.length; i++) {
-          const png = canvases[i].toDataURL('image/png');
-          canvasesCopy[i].outerHTML = `<img src="${png}" />`;
+          canvasesCopy[i].outerHTML = canvasToHtml(canvases[i]);
         }
 
-        let svgs = dom.querySelectorAll('svg');
-        let svgsCopy = domCopy.querySelectorAll('svg');
-
+        const svgs = dom.querySelectorAll('svg');
+        const svgsCopy = domCopy.querySelectorAll('svg');
         for (let i = 0; i < svgs.length; i++) {
-          const svgDOM = svgs[i];
-          const svgDOMCopy = svgsCopy[i];
-          const svgXml = new XMLSerializer().serializeToString(svgs[i]);
-          const base64 = btoa(svgXml);
-          svgDOMCopy.outerHTML = `<img src="data:image/svg+xml;base64,${base64}" />`;
+          svgsCopy[i].outerHTML = svgToHtml(svgs[i]);
+        }
+
+        const imgs = dom.querySelectorAll('img');
+        const imgsCopy = domCopy.querySelectorAll('img');
+        for (let i = 0; i < imgs.length; i++) {
+          imgsCopy[i].outerHTML = await imgToHtml(imgs[i]);
         }
 
         return domCopy.innerHTML;
+      }
+
+      function canvasToHtml(canvas) {
+        const png = canvas.toDataURL('image/png');
+        return `<img src="${png}" />`;
+      }
+      function svgToHtml(svg) {
+        const svgXml = new XMLSerializer().serializeToString(svg);
+        const base64 = btoa(svgXml);
+        return `<img src="data:image/svg+xml;base64,${base64}" />`;
+      }
+      async function imgToHtml(img) {
+        const url = img.src;
+        const r = await fetch(url)
+          .then((r) => r.blob())
+          .then(
+            (b) =>
+              new Promise((resolve, _) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(b);
+              }),
+          );
+        return `<img src="${base64}" />`;
       }
     </script>
   </body>
