@@ -112,13 +112,8 @@ test.describe('test domToHtml', () => {
         <FullTest />
       </TestComponent>,
     );
-    const test = component.locator('#test');
-    await test.screenshot({ path: './src/__tests__/snapshots/full.png' });
     const result = component.locator('#result');
-    await expect(result).toHaveScreenshot(
-      './src/__tests__/snapshots/full.png',
-      { maxDiffPixelRatio: 0, maxDiffPixels: 0 },
-    );
+    await expect(result).toHaveScreenshot('./src/__tests__/snapshots/full.png');
 
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
