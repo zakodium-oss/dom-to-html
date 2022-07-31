@@ -12,36 +12,39 @@ export async function domToHtml(dom: Element | null) {
   const canvases = dom.querySelectorAll('canvas');
   const canvasesCopy = domCopy.querySelectorAll('canvas');
   for (let i = 0; i < canvases.length; i++) {
-    canvasesCopy[i].outerHTML = canvasToHtml(canvases[i]);
+    canvasesCopy[i].replaceWith(canvasToHtml(canvases[i]));
   }
 
   const svgs = dom.querySelectorAll('svg');
   const svgsCopy = domCopy.querySelectorAll('svg');
   for (let i = 0; i < svgs.length; i++) {
-    svgsCopy[i].outerHTML = svgToHtml(svgs[i]);
+    svgsCopy[i].replaceWith(svgToHtml(svgs[i]));
   }
 
   const imgs = dom.querySelectorAll('img');
   const imgsCopy = domCopy.querySelectorAll('img');
   for (let i = 0; i < imgs.length; i++) {
-    imgsCopy[i].outerHTML = await imgToHtml(imgs[i]);
+    imgsCopy[i].replaceWith(await imgToHtml(imgs[i]));
   }
 
   return domCopy.innerHTML;
 }
 
 function canvasToHtml(canvas: HTMLCanvasElement) {
-  const png = canvas.toDataURL('image/png');
-  return `<img src="${png}" />`;
+  const url = canvas.toDataURL('image/png');
+  const img = new Image();
+  img.src = url;
+  return img;
 }
 function svgToHtml(svg: SVGElement) {
   const svgXml = new XMLSerializer().serializeToString(svg);
   const base64 = btoa(svgXml);
-  return `<img src="data:image/svg+xml;base64,${base64}" />`;
+  const img = new Image();
+  img.src = `data:image/svg+xml;base64,${base64}`;
+  return img;
 }
 async function imgToHtml(image: HTMLImageElement) {
-  const url = image.src;
-  const base64: string = await fetch(url)
+  const url: string = await fetch(image.src)
     .then((r) => r.blob())
     .then(
       (b) =>
@@ -51,5 +54,7 @@ async function imgToHtml(image: HTMLImageElement) {
           reader.readAsDataURL(b);
         }),
     );
-  return `<img src="${base64}" />`;
+  const img = new Image();
+  img.src = url;
+  return img;
 }

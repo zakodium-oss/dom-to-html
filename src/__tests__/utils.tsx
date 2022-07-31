@@ -124,14 +124,14 @@ export function FullTest() {
   }, []);
   return (
     <>
-      <canvas ref={ref} width="200" height="100" />
       <h1>Test copy DOM element as HTML</h1>
       <h2>this is a jpg image</h2>
       <img src={jpg} />
       <h2>this is a svg image</h2>
-      <img src={svg} />
-      <h2>this is a png online image</h2>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Delete_key1.jpg" />
+      <SvgImageTest />
+      <h2>this is an online image</h2>
+      <OnlineImageTest />
+      <h2>this is an svg</h2>
       <svg height="80" width="300">
         <g fill="none" stroke="black" stroke-width="4">
           <path stroke-dasharray="5,5" d="M5 20 l215 0" />
@@ -139,6 +139,8 @@ export function FullTest() {
           <path stroke-dasharray="20,10,5,5,5,10" d="M5 60 l215 0" />
         </g>
       </svg>
+      <h2>this is a canvas</h2>
+      <canvas ref={ref} width="200" height="100" />
     </>
   );
 }
