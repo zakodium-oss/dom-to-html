@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { domToHtml } from '..';
 
 import jpg from './test.jpg';
+import png from './test.png';
 import svg from './test.svg';
 
 interface TestComponentProps {
@@ -53,13 +54,11 @@ export function CanvasTest() {
 export function JpgImageTest() {
   return <img src={jpg} />;
 }
+export function PngImageTest() {
+  return <img src={png} />;
+}
 export function SvgImageTest() {
   return <img src={svg} />;
-}
-export function OnlineImageTest() {
-  return (
-    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Delete_key1.jpg" />
-  );
 }
 export function SvgTest() {
   return (
@@ -126,11 +125,11 @@ export function FullTest() {
     <>
       <h1>Test copy DOM element as HTML</h1>
       <h2>this is a jpg image</h2>
-      <img src={jpg} />
+      <JpgImageTest />
       <h2>this is a svg image</h2>
       <SvgImageTest />
-      <h2>this is an online image</h2>
-      <OnlineImageTest />
+      <h2>this is a png image</h2>
+      <PngImageTest />
       <h2>this is an svg</h2>
       <svg height="80" width="300">
         <g fill="none" stroke="black" stroke-width="4">

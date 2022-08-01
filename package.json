@@ -19,7 +19,7 @@
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "playwright": "playwright test -c playwright.config.ts",
-    "playwright-update": "playwright test -c playwright.config.ts",
+    "playwright-update": "npm run playwright -- --update-snapshots",
     "prepack": "npm run tsc",
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",

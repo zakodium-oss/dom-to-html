@@ -7,7 +7,7 @@ import {
   SvgTest,
   JpgImageTest,
   SvgImageTest,
-  OnlineImageTest,
+  PngImageTest,
 } from './utils';
 
 test.describe('test domToHtml', () => {
@@ -90,15 +90,15 @@ test.describe('test domToHtml', () => {
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
     expect(resultHtml.startsWith('<img')).toBe(true);
   });
-  test('online image', async ({ mount }) => {
+  test('png image', async ({ mount }) => {
     const component = await mount(
       <TestComponent>
-        <OnlineImageTest />
+        <PngImageTest />
       </TestComponent>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
-      './src/__tests__/snapshots/onlineImage.png',
+      './src/__tests__/snapshots/pngImage.png',
     );
 
     const html = component.locator('#html');
@@ -112,6 +112,10 @@ test.describe('test domToHtml', () => {
         <FullTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({
+      path: './src/__tests__/snapshots/full.png',
+    });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/full.png');
 
