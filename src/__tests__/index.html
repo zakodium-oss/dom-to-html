@@ -68,19 +68,28 @@
         for (let i = 0; i < canvases.length; i++) {
           canvasesCopy[i].replaceWith(canvasToHtml(canvases[i]));
         }
-
+        const promises = [];
         const svgs = dom.querySelectorAll('svg');
         const svgsCopy = domCopy.querySelectorAll('svg');
         for (let i = 0; i < svgs.length; i++) {
-          svgsCopy[i].replaceWith(await svgToHtml(svgs[i]));
+          promises.push(
+            svgToHtml(svgs[i], (result) => {
+              svgsCopy[i].replaceWith(result);
+            }),
+          );
         }
 
         const imgs = dom.querySelectorAll('img');
         const imgsCopy = domCopy.querySelectorAll('img');
         for (let i = 0; i < imgs.length; i++) {
-          imgsCopy[i].replaceWith(await imgToHtml(imgs[i]));
+          promises.push(
+            imgToHtml(imgs[i], (result) => {
+              imgsCopy[i].replaceWith(result);
+            }),
+          );
         }
 
+        await Promise.all(promises);
         return domCopy.innerHTML;
       }
 
@@ -90,8 +99,9 @@
         img.src = url;
         return img;
       }
-      async function svgToHtml(svg) {
-        const { width, height } = svg.getBBox();
+      async function svgToHtml(svg, callback) {
+        const width = svg.clientWidth;
+        const height = svg.clientHeight;
         const base64 = btoa(new XMLSerializer().serializeToString(svg));
         const url = `data:image/svg+xml;base64,${base64}`;
         const image = new Image();
@@ -99,41 +109,30 @@
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        await new Promise((resolve) => {
+        return new Promise((resolve) => {
           image.onload = () => {
             ctx.drawImage(image, 0, 0);
+            callback(canvasToHtml(canvas));
             resolve();
           };
           image.src = url;
         });
-
-        return canvasToHtml(canvas);
       }
-      async function imgToHtml(image) {
-        const { width, height } = image;
-        const url = await fetch(image.src)
-          .then((r) => r.blob())
-          .then(
-            (b) =>
-              new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(b);
-              }),
-          );
+      async function imgToHtml(img, callback) {
+        const { width, height } = img;
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        await new Promise((resolve) => {
+        const image = new Image();
+        return new Promise((resolve) => {
           image.onload = () => {
             ctx.drawImage(image, 0, 0);
+            callback(canvasToHtml(canvas));
             resolve();
           };
-          image.src = url;
+          image.src = img.src;
         });
-
-        return canvasToHtml(canvas);
       }
       var c = document.getElementById('myCanvas');
       var ctx = c.getContext('2d');
