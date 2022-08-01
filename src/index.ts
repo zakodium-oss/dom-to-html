@@ -18,7 +18,7 @@ export async function domToHtml(dom: Element | null) {
   const svgs = dom.querySelectorAll('svg');
   const svgsCopy = domCopy.querySelectorAll('svg');
   for (let i = 0; i < svgs.length; i++) {
-    svgsCopy[i].replaceWith(svgToHtml(svgs[i]));
+    svgsCopy[i].replaceWith(await svgToHtml(svgs[i]));
   }
 
   const imgs = dom.querySelectorAll('img');
@@ -36,14 +36,28 @@ function canvasToHtml(canvas: HTMLCanvasElement) {
   img.src = url;
   return img;
 }
-function svgToHtml(svg: SVGElement) {
-  const svgXml = new XMLSerializer().serializeToString(svg);
-  const base64 = btoa(svgXml);
-  const img = new Image();
-  img.src = `data:image/svg+xml;base64,${base64}`;
-  return img;
+async function svgToHtml(svg: SVGSVGElement) {
+  const width = svg.clientWidth;
+  const height = svg.clientHeight;
+  const base64 = btoa(new XMLSerializer().serializeToString(svg));
+  const url = `data:image/svg+xml;base64,${base64}`;
+  const image = new Image();
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  await new Promise((resolve) => {
+    image.onload = () => {
+      ctx.drawImage(image, 0, 0);
+      resolve(image);
+    };
+    image.src = url;
+  });
+
+  return canvasToHtml(canvas);
 }
 async function imgToHtml(image: HTMLImageElement) {
+  const { width, height } = image;
   const url: string = await fetch(image.src)
     .then((r) => r.blob())
     .then(
@@ -54,7 +68,17 @@ async function imgToHtml(image: HTMLImageElement) {
           reader.readAsDataURL(b);
         }),
     );
-  const img = new Image();
-  img.src = url;
-  return img;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  await new Promise((resolve) => {
+    image.onload = () => {
+      ctx.drawImage(image, 0, 0);
+      resolve(image);
+    };
+    image.src = url;
+  });
+
+  return canvasToHtml(canvas);
 }

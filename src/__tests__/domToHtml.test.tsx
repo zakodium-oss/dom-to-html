@@ -19,6 +19,8 @@ test.describe('test domToHtml', () => {
         </div>
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/basic.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/basic.png',
@@ -34,6 +36,8 @@ test.describe('test domToHtml', () => {
         <SvgTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/svg.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/svg.png');
 
@@ -48,6 +52,8 @@ test.describe('test domToHtml', () => {
         <CanvasTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/canvas.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/canvas.png',
@@ -64,6 +70,8 @@ test.describe('test domToHtml', () => {
         <JpgImageTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/JpgImage.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/JpgImage.png',
@@ -80,6 +88,8 @@ test.describe('test domToHtml', () => {
         <SvgImageTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/svgImage.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/svgImage.png',
@@ -96,6 +106,8 @@ test.describe('test domToHtml', () => {
         <PngImageTest />
       </TestComponent>,
     );
+    const test = component.locator('#test');
+    await test.screenshot({ path: './src/__tests__/snapshots/pngImage.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/pngImage.png',

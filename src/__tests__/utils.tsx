@@ -26,9 +26,7 @@ export function TestComponent({ children }: TestComponentProps) {
         <div ref={ref} id="test">
           {children}
         </div>
-        {html && (
-          <div dangerouslySetInnerHTML={{ __html: html }} id="result"></div>
-        )}
+        {html && <div dangerouslySetInnerHTML={{ __html: html }} id="result" />}
       </div>
       {html && <textarea rows={20} value={html} id="html" />}
     </div>
