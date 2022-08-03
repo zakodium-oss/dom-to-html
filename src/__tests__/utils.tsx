@@ -14,8 +14,10 @@ export function TestComponent({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState('');
   async function initializeHtml() {
-    const html = await domToHtml(ref.current);
-    setHtml(html);
+    if (ref.current) {
+      const html = await domToHtml(ref.current);
+      setHtml(html);
+    }
   }
   useEffect(() => {
     void initializeHtml();
@@ -121,7 +123,7 @@ export function FullTest() {
   }, []);
   return (
     <>
-      <h1>Test copy DOM element as HTML</h1>
+      <h1>Test DOM element as HTML</h1>
       <h2>this is a jpg image</h2>
       <JpgImageTest />
       <h2>this is a svg image</h2>

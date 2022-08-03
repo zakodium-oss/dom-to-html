@@ -111,7 +111,7 @@
         const ctx = canvas.getContext('2d');
         return new Promise((resolve) => {
           image.onload = () => {
-            ctx.drawImage(image, 0, 0);
+            ctx.drawImage(image, 0, 0, width, height);
             callback(canvasToHtml(canvas));
             resolve();
           };
@@ -119,15 +119,16 @@
         });
       }
       async function imgToHtml(img, callback) {
-        const { width, height } = img;
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
         const image = new Image();
         return new Promise((resolve) => {
           image.onload = () => {
-            ctx.drawImage(image, 0, 0);
+            const width = img.width;
+            const height = img.height;
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
             callback(canvasToHtml(canvas));
             resolve();
           };

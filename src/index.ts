@@ -3,8 +3,8 @@
  * @params dom - Dom element.
  * @returns - Html result.
  */
-export async function domToHtml(dom: Element | null) {
-  if (dom === null || !dom.innerHTML) {
+export async function domToHtml(dom: Element): Promise<string> {
+  if (!dom.innerHTML) {
     return '';
   }
   const domCopy = dom.cloneNode(true) as Element;
@@ -54,13 +54,13 @@ async function svgToHtml(
   const base64 = btoa(new XMLSerializer().serializeToString(svg));
   const url = `data:image/svg+xml;base64,${base64}`;
   const image = new Image();
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
   return new Promise<void>((resolve) => {
     image.onload = () => {
-      ctx.drawImage(image, 0, 0);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+      ctx.drawImage(image, 0, 0, width, height);
       callback(canvasToHtml(canvas));
       resolve();
     };
@@ -71,15 +71,15 @@ async function imgToHtml(
   img: HTMLImageElement,
   callback: (result: HTMLImageElement) => void,
 ) {
-  const { width, height } = img;
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
   const image = new Image();
   return new Promise<void>((resolve) => {
     image.onload = () => {
-      ctx.drawImage(image, 0, 0);
+      const { width, height } = img;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+      ctx.drawImage(img, 0, 0, width, height);
       callback(canvasToHtml(canvas));
       resolve();
     };
