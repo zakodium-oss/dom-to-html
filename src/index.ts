@@ -71,20 +71,19 @@ async function imgToHtml(
   img: HTMLImageElement,
   callback: (result: HTMLImageElement) => void,
 ) {
-  return fetch(img.src)
-    .then((r) => r.blob())
-    .then(
-      (b) =>
-        new Promise<void>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const url = reader.result as string;
-            const image = new Image();
-            image.src = url;
-            callback(image);
-            resolve();
-          };
-          reader.readAsDataURL(b);
-        }),
-    );
+  const image = new Image();
+  return new Promise<void>((resolve) => {
+    image.onload = () => {
+      const width = img.width;
+      const height = img.height;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+      ctx.drawImage(img, 0, 0, width, height);
+      callback(canvasToHtml(canvas));
+      resolve();
+    };
+    image.src = img.src;
+  });
 }

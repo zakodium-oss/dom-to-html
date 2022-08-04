@@ -19,6 +19,9 @@ test.describe('test domToHtml', () => {
         </div>
       </TestComponent>,
     );
+    await component
+      .locator('#test')
+      .screenshot({ path: './src/__tests__/snapshots/basic.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/basic.png',
@@ -41,6 +44,7 @@ test.describe('test domToHtml', () => {
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
     expect(resultHtml.startsWith('<img')).toBe(true);
+    expect(resultHtml.split('base64')).toHaveLength(2);
   });
   test('canvas', async ({ mount }) => {
     const component = await mount(
@@ -57,6 +61,7 @@ test.describe('test domToHtml', () => {
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
     expect(resultHtml.startsWith('<img')).toBe(true);
+    expect(resultHtml.split('base64')).toHaveLength(2);
   });
   test('jpg image', async ({ mount }) => {
     const component = await mount(
@@ -73,6 +78,7 @@ test.describe('test domToHtml', () => {
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
     expect(resultHtml.startsWith('<img')).toBe(true);
+    expect(resultHtml.split('base64')).toHaveLength(2);
   });
   test('svg image', async ({ mount }) => {
     const component = await mount(
@@ -89,6 +95,7 @@ test.describe('test domToHtml', () => {
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
     expect(resultHtml.startsWith('<img')).toBe(true);
+    expect(resultHtml.split('base64')).toHaveLength(2);
   });
   test('png image', async ({ mount }) => {
     const component = await mount(
@@ -105,6 +112,7 @@ test.describe('test domToHtml', () => {
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
     expect(resultHtml.startsWith('<img')).toBe(true);
+    expect(resultHtml.split('base64')).toHaveLength(2);
   });
   test('full', async ({ mount }) => {
     const component = await mount(
@@ -118,5 +126,6 @@ test.describe('test domToHtml', () => {
     const html = component.locator('#html');
     const resultHtml = await html.inputValue();
     expect(resultHtml).toBe(await result.evaluate((node) => node.innerHTML));
+    expect(resultHtml.split('base64')).toHaveLength(6);
   });
 });
