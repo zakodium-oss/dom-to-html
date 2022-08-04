@@ -1,0 +1,145 @@
+<html>
+  <head> </head>
+  <body>
+    <button onclick="toCopy()">Copy</button>
+    <div id="toCopy">
+      <h1>Test copy DOM element as HTML</h1>
+      <h2>this is a png image</h2>
+      <img src="test.png" />
+      <h2>this is a jpg image</h2>
+      <img src="test.jpg" />
+      <h2>this is a svg image</h2>
+      <img src="test.svg" />
+      <h2>this is a svg</h2>
+      <svg height="80" width="300">
+        <g fill="none" stroke="black" stroke-width="4">
+          <path stroke-dasharray="5,5" d="M5 20 l215 0" />
+          <path stroke-dasharray="10,10" d="M5 40 l215 0" />
+          <path stroke-dasharray="20,10,5,5,5,10" d="M5 60 l215 0" />
+          <path stroke-dasharray="20,10,5,5,5,10" d="M5 60 l215 0" />
+          <path stroke-dasharray="20,10,5,5,5,10" d="M5 60 l215 0" />
+          <path stroke-dasharray="20,10,5,5,5,10" d="M5 60 l215 0" />
+          <path stroke-dasharray="20,10,5,5,5,10" d="M5 60 l215 0" />
+        </g>
+      </svg>
+      <h2>this is a canvas</h2>
+      <canvas
+        id="myCanvas"
+        width="200"
+        height="100"
+        style="border: 1px solid #d3d3d3"
+      >
+        Your browser does not support the HTML canvas tag.</canvas
+      >
+    </div>
+
+    <script type="text/javascript">
+      async function toCopy() {
+        const html = await domToHtml(document.getElementById('toCopy'));
+        copyHTMLToClipboard(html);
+      }
+      function copyHTMLToClipboard(html) {
+        const type = 'text/html';
+        if (typeof ClipboardItem === 'undefined') {
+          alert('Copy to clipboard not supported in this browser');
+          return;
+        }
+        const blob = new Blob([html], { type });
+        const data = [new ClipboardItem({ [type]: blob })];
+
+        navigator.clipboard.write(data).then(
+          () => {
+            alert('Copied to clipboard');
+          },
+          () => {
+            alert('Failed to copy to clipboard');
+          },
+        );
+      }
+
+      async function domToHtml(dom) {
+        if (dom === null || !dom.innerHTML) {
+          return '';
+        }
+        const domCopy = dom.cloneNode(true);
+
+        const canvases = dom.querySelectorAll('canvas');
+        const canvasesCopy = domCopy.querySelectorAll('canvas');
+        for (let i = 0; i < canvases.length; i++) {
+          canvasesCopy[i].replaceWith(canvasToHtml(canvases[i]));
+        }
+        const promises = [];
+        const svgs = dom.querySelectorAll('svg');
+        const svgsCopy = domCopy.querySelectorAll('svg');
+        for (let i = 0; i < svgs.length; i++) {
+          promises.push(
+            svgToHtml(svgs[i], (result) => {
+              svgsCopy[i].replaceWith(result);
+            }),
+          );
+        }
+
+        const imgs = dom.querySelectorAll('img');
+        const imgsCopy = domCopy.querySelectorAll('img');
+        for (let i = 0; i < imgs.length; i++) {
+          promises.push(
+            imgToHtml(imgs[i], (result) => {
+              imgsCopy[i].replaceWith(result);
+            }),
+          );
+        }
+
+        await Promise.all(promises);
+        return domCopy.innerHTML;
+      }
+
+      function canvasToHtml(canvas) {
+        const url = canvas.toDataURL('image/png');
+        const img = new Image();
+        img.src = url;
+        return img;
+      }
+      async function svgToHtml(svg, callback) {
+        const width = svg.clientWidth;
+        const height = svg.clientHeight;
+        const base64 = btoa(new XMLSerializer().serializeToString(svg));
+        const url = `data:image/svg+xml;base64,${base64}`;
+        const image = new Image();
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        return new Promise((resolve) => {
+          image.onload = () => {
+            ctx.drawImage(image, 0, 0, width, height);
+            callback(canvasToHtml(canvas));
+            resolve();
+          };
+          image.src = url;
+        });
+      }
+      async function imgToHtml(img, callback) {
+        const image = new Image();
+        return new Promise((resolve) => {
+          image.onload = () => {
+            const width = img.width;
+            const height = img.height;
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
+            callback(canvasToHtml(canvas));
+            resolve();
+          };
+          image.src = img.src;
+        });
+      }
+      var c = document.getElementById('myCanvas');
+      var ctx = c.getContext('2d');
+      ctx.beginPath();
+      ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+      ctx.stroke();
+    </script>
+  </body>
+</html>
