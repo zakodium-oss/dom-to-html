@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 
 import {
-  TestComponent,
+  TestDomToHtml,
   CanvasTest,
   FullTest,
   SvgTest,
@@ -13,15 +13,12 @@ import {
 test.describe('test domToHtml', () => {
   test('basic', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <div>
           <span>text</span>
         </div>
-      </TestComponent>,
+      </TestDomToHtml>,
     );
-    await component
-      .locator('#test')
-      .screenshot({ path: './src/__tests__/snapshots/basic.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/basic.png',
@@ -33,9 +30,9 @@ test.describe('test domToHtml', () => {
   });
   test('svg', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <SvgTest />
-      </TestComponent>,
+      </TestDomToHtml>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/svg.png');
@@ -48,9 +45,9 @@ test.describe('test domToHtml', () => {
   });
   test('canvas', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <CanvasTest />
-      </TestComponent>,
+      </TestDomToHtml>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
@@ -65,9 +62,9 @@ test.describe('test domToHtml', () => {
   });
   test('jpg image', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <JpgImageTest />
-      </TestComponent>,
+      </TestDomToHtml>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
@@ -82,9 +79,9 @@ test.describe('test domToHtml', () => {
   });
   test('svg image', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <SvgImageTest />
-      </TestComponent>,
+      </TestDomToHtml>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
@@ -99,9 +96,9 @@ test.describe('test domToHtml', () => {
   });
   test('png image', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <PngImageTest />
-      </TestComponent>,
+      </TestDomToHtml>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
@@ -116,9 +113,9 @@ test.describe('test domToHtml', () => {
   });
   test('full', async ({ mount }) => {
     const component = await mount(
-      <TestComponent>
+      <TestDomToHtml>
         <FullTest />
-      </TestComponent>,
+      </TestDomToHtml>,
     );
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/full.png');
