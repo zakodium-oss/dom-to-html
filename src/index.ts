@@ -1,3 +1,5 @@
+export * from './copyToClipboard';
+
 /**
  * Convert a dom element including canvas and svg to an html.
  * @params dom - Dom element.
