@@ -1,11 +1,35 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
-import { domToHtml } from '..';
+import { copyToClipboard, domToHtml } from '..';
 
 import jpg from './test.jpg';
 import png from './test.png';
 import svg from './test.svg';
 
+export function TestCopyClipboard({ children }: TestComponentProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [clipboard, setClipboard] = useState<string | undefined>(undefined);
+  async function initializeHtml() {
+    if (ref.current) {
+      await copyToClipboard(ref.current);
+      const clipboards = await navigator.clipboard.read();
+      const blob = await clipboards[0].getType('text/html');
+      const text = await blob.text();
+      setClipboard(text);
+    }
+  }
+  useEffect(() => {
+    void initializeHtml();
+  }, []);
+  return (
+    <div>
+      <div ref={ref} id="test">
+        {children}
+      </div>
+      <textarea rows={20} value={clipboard} id="clipboard" />
+    </div>
+  );
+}
 interface TestComponentProps {
   children?: ReactNode;
 }
