@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/experimental-ct-react';
 import { TestCopyClipboard } from './utils';
 
 test.describe('test copyToClipboard', () => {
-  test('basic', async ({ mount, page }) => {
+  test('basic', async ({ mount, page, browserName }) => {
     const component = await mount(
       <TestCopyClipboard>
         <div>
@@ -11,11 +11,21 @@ test.describe('test copyToClipboard', () => {
         </div>
       </TestCopyClipboard>,
     );
-    await page.waitForNavigation();
+
     const clipboard = component.locator('#clipboard');
-    // await clipboard.click();
-    // await page.keyboard.press('Shift+V');
-    const clipboardText = await clipboard.inputValue();
-    expect(clipboardText).toBe('<div><span>text</span></div>');
+    if (browserName === 'chromium') {
+      page.on('dialog', (dialog) => {
+        expect(dialog.message()).toBe('Copied to clipboard');
+        void dialog.accept();
+      });
+      const clipboardText = await clipboard.inputValue();
+      expect(clipboardText).toBe('<div><span>text</span></div>');
+    } else {
+      page.on('dialog', (dialog) =>
+        expect(dialog.message()).toBe(
+          'Copy to clipboard not supported in this browser',
+        ),
+      );
+    }
   });
 });

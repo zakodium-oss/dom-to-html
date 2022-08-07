@@ -8,7 +8,7 @@ import svg from './test.svg';
 
 export function TestCopyClipboard({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [clipboard, setClipboard] = useState<string | undefined>(undefined);
+  const [clipboard, setClipboard] = useState<string>('');
   async function initializeHtml() {
     if (ref.current) {
       await copyToClipboard(ref.current);

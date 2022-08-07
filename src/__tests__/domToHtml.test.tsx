@@ -19,9 +19,6 @@ test.describe('test domToHtml', () => {
         </div>
       </TestComponent>,
     );
-    await component
-      .locator('#test')
-      .screenshot({ path: './src/__tests__/snapshots/basic.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/basic.png',
