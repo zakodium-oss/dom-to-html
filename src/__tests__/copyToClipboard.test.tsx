@@ -11,13 +11,14 @@ test.describe('test copyToClipboard', () => {
         </div>
       </TestCopyClipboard>,
     );
-
-    const clipboard = component.locator('#clipboard');
+    const copy = component.locator('#toCopy');
+    await copy.click();
     if (browserName === 'chromium') {
-      page.on('dialog', (dialog) => {
-        expect(dialog.message()).toBe('Copied to clipboard');
-        void dialog.accept();
-      });
+      page.on('dialog', (dialog) =>
+        expect(dialog.message()).toBe('Copied to clipboard'),
+      );
+      const clipboard = component.locator('#clipboard');
+      await clipboard.waitFor({ state: 'visible' });
       const clipboardText = await clipboard.inputValue();
       expect(clipboardText).toBe('<div><span>text</span></div>');
     } else {

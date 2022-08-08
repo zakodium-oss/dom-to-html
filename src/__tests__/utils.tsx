@@ -18,15 +18,15 @@ export function TestCopyClipboard({ children }: TestComponentProps) {
       setClipboard(text);
     }
   }
-  useEffect(() => {
-    void initializeHtml();
-  }, []);
   return (
     <div>
       <div ref={ref} id="test">
         {children}
       </div>
-      <textarea rows={20} value={clipboard} id="clipboard" />
+      {clipboard && <textarea rows={20} value={clipboard} id="clipboard" />}
+      <button onPointerDown={() => void initializeHtml()} id="toCopy">
+        Copy
+      </button>
     </div>
   );
 }
