@@ -9,14 +9,16 @@ import svg from './test.svg';
 export function TestCopyClipboard({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [clipboard, setClipboard] = useState<string>('');
-  async function initializeHtml() {
+  async function copy() {
     if (ref.current) {
       await copyToClipboard(ref.current);
-      const clipboards = await navigator.clipboard.read();
-      const blob = await clipboards[0].getType('text/html');
-      const text = await blob.text();
-      setClipboard(text);
     }
+  }
+  async function paste() {
+    const clipboards = await navigator.clipboard.read();
+    const blob = await clipboards[0].getType('text/html');
+    const text = await blob.text();
+    setClipboard(text);
   }
   return (
     <div>
@@ -24,8 +26,11 @@ export function TestCopyClipboard({ children }: TestComponentProps) {
         {children}
       </div>
       {clipboard && <textarea rows={20} value={clipboard} id="clipboard" />}
-      <button onPointerDown={() => void initializeHtml()} id="toCopy">
+      <button type="button" onPointerDown={() => void copy()} id="copy">
         Copy
+      </button>
+      <button type="button" onPointerDown={() => void paste()} id="paste">
+        Paste
       </button>
     </div>
   );

@@ -11,8 +11,10 @@ test.describe('test copyToClipboard', () => {
         </div>
       </TestCopyClipboard>,
     );
-    const copy = component.locator('#toCopy');
+    const copy = component.locator('#copy');
     await copy.click();
+    const paste = component.locator('#paste');
+    await paste.click();
     if (browserName === 'chromium') {
       page.on('dialog', (dialog) =>
         expect(dialog.message()).toBe('Copied to clipboard'),
