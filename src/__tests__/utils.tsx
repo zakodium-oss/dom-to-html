@@ -13,22 +13,19 @@ interface TestSaveHtmlProps {
 }
 export function TestSaveHtml({ children, filename }: TestSaveHtmlProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [done, setDone] = useState(false);
   async function download() {
     if (ref.current) {
       await saveHtml(ref.current, { filename });
-      setDone(true);
     }
   }
-  useEffect(() => {
-    void download();
-  }, []);
   return (
     <div>
       <div ref={ref} id="test">
         {children}
       </div>
-      {done && <h1 id="done">Done</h1>}
+      <button onClick={() => void download()} type="button" id="download">
+        download
+      </button>
     </div>
   );
 }
