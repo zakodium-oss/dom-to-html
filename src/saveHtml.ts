@@ -15,9 +15,14 @@ export async function saveHtml(dom: Element, options: SaveHtmlOptions) {
   });
   try {
     const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
     a.download = filename;
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      a.remove();
+    }, 0);
   } catch (e) {
     error(e);
   }
