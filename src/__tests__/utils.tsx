@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
-import { domToHtml } from '..';
-import { saveHtml } from '../saveHtml';
+import { domToHtml, saveHtml } from '..';
 
 import jpg from './test.jpg';
 import png from './test.png';
