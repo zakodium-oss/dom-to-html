@@ -15,7 +15,8 @@ test.describe('test copyToClipboard', () => {
     const copy = component.locator('#copy');
     await copy.click();
     const paste = component.locator('#paste');
-    await paste.click();
+    await paste.focus();
+    await page.keyboard.press('Control+V');
     if (browserName === 'chromium') {
       page.on('dialog', (dialog) =>
         expect(dialog.message()).toBe('Copied to clipboard'),
@@ -41,7 +42,8 @@ test.describe('test copyToClipboard', () => {
     const copy = component.locator('#copy');
     await copy.click();
     const paste = component.locator('#paste');
-    await paste.click();
+    await paste.focus();
+    await page.keyboard.press('Control+V');
     if (browserName === 'chromium') {
       page.on('dialog', (dialog) =>
         expect(dialog.message()).toBe('Copied to clipboard'),

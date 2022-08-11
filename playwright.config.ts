@@ -18,7 +18,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chrome'],
         contextOptions: {
-          permissions: ['clipboard-read', 'clipboard-write'],
+          permissions: ['clipboard-write'],
         },
       },
     },
