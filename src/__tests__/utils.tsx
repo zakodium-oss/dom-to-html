@@ -1,16 +1,37 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
-import { domToHtml } from '..';
+import { domToHtml, saveHtml } from '..';
 
 import jpg from './test.jpg';
 import png from './test.png';
 import svg from './test.svg';
 
-interface TestComponentProps {
-  children?: ReactNode;
+interface TestSaveHtmlProps {
+  children: ReactNode | ReactNode[];
+  filename: string;
 }
-
-export function TestComponent({ children }: TestComponentProps) {
+export function TestSaveHtml({ children, filename }: TestSaveHtmlProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  async function download() {
+    if (ref.current) {
+      await saveHtml(ref.current, { filename });
+    }
+  }
+  return (
+    <div>
+      <div ref={ref} id="test">
+        {children}
+      </div>
+      <button onClick={() => void download()} type="button" id="download">
+        download
+      </button>
+    </div>
+  );
+}
+interface TestDomToHtmlProps {
+  children: ReactNode | ReactNode[];
+}
+export function TestDomToHtml({ children }: TestDomToHtmlProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState('');
   async function initializeHtml() {
