@@ -1,13 +1,13 @@
 import { domToHtml } from '.';
 
 interface SaveHtmlOptions {
-  error?: (error: unknown) => void;
+  onError?: (e: unknown) => void;
   filename: string;
 }
 
 export async function saveHtml(dom: Element, options: SaveHtmlOptions) {
   // eslint-disable-next-line no-alert
-  const { filename, error = (e) => alert(String(e)) } = options;
+  const { filename, onError = (e) => alert(String(e)) } = options;
   const type = 'text/html';
   const html = await domToHtml(dom);
   const blob = new Blob([html], {
@@ -24,6 +24,6 @@ export async function saveHtml(dom: Element, options: SaveHtmlOptions) {
       a.remove();
     }, 0);
   } catch (e) {
-    error(e);
+    onError(e);
   }
 }
