@@ -1,13 +1,52 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ClipboardEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
-import { domToHtml, saveHtml } from '..';
+import { domToHtml, copyToClipboard, saveHtml } from '..';
 
 import jpg from './test.jpg';
 import png from './test.png';
 import svg from './test.svg';
 
-interface TestSaveHtmlProps {
-  children: ReactNode | ReactNode[];
+interface TestComponentProps {
+  children?: ReactNode;
+}
+export function TestCopyClipboard({ children }: TestComponentProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [clipboard, setClipboard] = useState<string>('');
+  async function copy() {
+    if (ref.current) {
+      await copyToClipboard(ref.current);
+    }
+  }
+  function paste(e: ClipboardEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    const clipboardData = e.clipboardData;
+    const text = clipboardData.getData('text/html');
+    setClipboard(text);
+  }
+  return (
+    <div>
+      <div ref={ref} id="test">
+        {children}
+      </div>
+      {clipboard && (
+        <textarea
+          onPaste={(e) => paste(e)}
+          rows={20}
+          value={clipboard}
+          id="clipboard"
+        />
+      )}
+      <button type="button" onPointerDown={() => void copy()} id="copy">
+        Copy
+      </button>
+      <div contentEditable onPaste={(e) => paste(e)} id="paste">
+        Paste
+      </div>
+    </div>
+  );
+}
+interface TestSaveHtmlProps extends TestComponentProps {
   filename: string;
 }
 export function TestSaveHtml({ children, filename }: TestSaveHtmlProps) {
@@ -28,10 +67,8 @@ export function TestSaveHtml({ children, filename }: TestSaveHtmlProps) {
     </div>
   );
 }
-interface TestDomToHtmlProps {
-  children: ReactNode | ReactNode[];
-}
-export function TestDomToHtml({ children }: TestDomToHtmlProps) {
+
+export function TestDomToHtml({ children }: TestComponentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState('');
   async function initializeHtml() {

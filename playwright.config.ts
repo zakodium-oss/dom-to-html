@@ -1,4 +1,4 @@
-import { type PlaywrightTestConfig, devices } from '@playwright/test';
+import { PlaywrightTestConfig, devices } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   forbidOnly: !!process.env.CI,
@@ -15,7 +15,12 @@ const config: PlaywrightTestConfig = {
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        contextOptions: {
+          permissions: ['clipboard-write'],
+        },
+      },
     },
     {
       name: 'firefox',

@@ -39,12 +39,23 @@ export async function domToHtml(dom: Element): Promise<string> {
   return domCopy.innerHTML;
 }
 
+/**
+ * Convert canvas to an image/png base64 encoded image
+ * @params canvas - Canvas html element.
+ * @returns - Image result.
+ */
 function canvasToHtml(canvas: HTMLCanvasElement) {
   const url = canvas.toDataURL('image/png');
   const img = new Image();
   img.src = url;
   return img;
 }
+
+/**
+ * Convert svg to an image/png base64 encoded image
+ * @params svg - svg html element.
+ * @returns - Image result.
+ */
 async function svgToHtml(
   svg: SVGSVGElement,
   callback: (result: HTMLImageElement) => void,
@@ -67,6 +78,12 @@ async function svgToHtml(
     image.src = url;
   });
 }
+
+/**
+ * Convert img to an image/png base64 encoded image
+ * @params img - Img html element.
+ * @returns - Image result.
+ */
 async function imgToHtml(
   img: HTMLImageElement,
   callback: (result: HTMLImageElement) => void,
@@ -80,7 +97,7 @@ async function imgToHtml(
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-      ctx.drawImage(image, 0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
       callback(canvasToHtml(canvas));
       resolve();
     };
