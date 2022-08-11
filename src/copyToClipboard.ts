@@ -6,7 +6,7 @@ interface CopyToClipboardOptions {
    * Error callback.
    * @default  (e)=>{alert(String(e))}
    */
-  error?: (e: unknown) => void;
+  onError?: (e: unknown) => void;
 }
 /**
  * Convert a dom element including canvas and svg to an html.
@@ -19,7 +19,7 @@ export async function copyToClipboard(
   options: CopyToClipboardOptions = {},
 ) {
   const {
-    error = (e) => {
+    onError = (e) => {
       alert(String(e));
     },
   } = options;
@@ -38,7 +38,7 @@ export async function copyToClipboard(
       alert('Copied to clipboard');
     },
     (e) => {
-      error(e);
+      onError(e);
     },
   );
 }
