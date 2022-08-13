@@ -83,9 +83,6 @@ test.describe('test domToHtml', () => {
         <SvgImageTest />
       </TestDomToHtml>,
     );
-    await component
-      .locator('#test')
-      .screenshot({ path: './src/__tests__/snapshots/svgImage.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot(
       './src/__tests__/snapshots/svgImage.png',
@@ -120,9 +117,6 @@ test.describe('test domToHtml', () => {
         <FullTest />
       </TestDomToHtml>,
     );
-    await component
-      .locator('#test')
-      .screenshot({ path: './src/__tests__/snapshots/full.png' });
     const result = component.locator('#result');
     await expect(result).toHaveScreenshot('./src/__tests__/snapshots/full.png');
 
