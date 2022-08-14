@@ -53,7 +53,7 @@ function canvasToHtml(canvas: HTMLCanvasElement) {
 
 /**
  * Convert svg to an image/png base64 encoded image
- * @params svg - svg html element.
+ * @params svg - Svg html element.
  * @returns - Image result.
  */
 async function svgToHtml(
@@ -97,7 +97,7 @@ async function imgToHtml(
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-      ctx.drawImage(img, 0, 0, width, height);
+      ctx.drawImage(image, 0, 0, width, height);
       callback(canvasToHtml(canvas));
       resolve();
     };
