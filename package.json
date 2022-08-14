@@ -1,6 +1,6 @@
 {
   "name": "dom-to-html",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Convert a dom element including canvas and svg to an html",
   "main": "./lib/index.js",
   "module": "./lib-esm/index.js",
